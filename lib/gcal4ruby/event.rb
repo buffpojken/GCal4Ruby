@@ -227,7 +227,8 @@ module GCal4Ruby
     
     #Creates a new event
     def create
-      service.send_request(GData4Ruby::Request.new(:post, @parent_calendar.content_uri, to_xml))
+      headers = { 'Content-Type' => 'application/atom+xml' }
+      service.send_request(GData4Ruby::Request.new(:post, @parent_calendar.content_uri, to_xml, headers))
     end
     
     #Returns an XML representation of the event.
