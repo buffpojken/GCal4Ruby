@@ -157,7 +157,7 @@ module GCal4Ruby
     
     #Creates a new instance of the object
     def create
-      return service.send_request(GData4Ruby::Request.new(:post, @@calendar_feed, to_xml()))
+      return service.send_request(GData4Ruby::Request.new(:post, @@calendar_feed, to_xml(), {'Content-Type' => 'application/atom+xml'}))
     end
     
     #Finds a Calendar based on a text query or by an id.  Parameters are:
