@@ -173,7 +173,7 @@ module GCal4Ruby
       if query.is_a? Hash and query[:id]
         id = query[:id]
         #log("Finding by ID: #{id}")
-        d = service.send_request(GData4Ruby::Request.new(:get, id, {}))
+        d = service.send_request(GData4Ruby::Request.new(:get, @@calendar_feed + id, {}))
         #log(d.inspect)
         if d
           return get_instance(service, d)
@@ -239,7 +239,7 @@ module GCal4Ruby
       xml.root.elements.each(){}.map do |ele|
         case ele.name
           when "id"
-          @id = ele.text.gsub("http://www.google.com/calendar/feeds/default/owncalendars/full/", "")
+          @id = ele.text.gsub(@@calendar_feed, "")
           when 'summary'
           @summary = ele.text
           when "color"
