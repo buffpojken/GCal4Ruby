@@ -117,9 +117,9 @@ module GCal4Ruby
     end
     
     #Returns an array of Event objects corresponding to each event in the calendar.
-    def events
+    def events(query_params = {})
       events = []
-      ret = service.send_request(GData4Ruby::Request.new(:get, @content_uri))
+      ret = service.send_request(GData4Ruby::Request.new(:get, @content_uri, nil, nil, {'max-results' => '10000'}.merge(query_params)))
       REXML::Document.new(ret.body).root.elements.each("entry"){}.map do |entry|
         entry = GData4Ruby::Utils.add_namespaces(entry)
         e = Event.new(service)
@@ -239,7 +239,7 @@ module GCal4Ruby
       xml.root.elements.each(){}.map do |ele|
         case ele.name
           when "id"
-          @id = ele.text.gsub("www.google.com/calendar/feeds/default/calendars/", "")
+          @id = ele.text.gsub("http://www.google.com/calendar/feeds/default/owncalendars/full/", "")
           when 'summary'
           @summary = ele.text
           when "color"
