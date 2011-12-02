@@ -287,7 +287,7 @@ module GCal4Ruby
     
     #The event's parent calendar
     def calendar 
-      @parent_calendar = Calendar.find(service, {:id => @calendar_id}) if not @parent_calendar and @calendar_id
+      @parent_calendar = Calendar.find(service, {:id => "http://www.google.com/calendar/feeds/"+@calendar_id}) if not @parent_calendar and @calendar_id
       return @parent_calendar
     end
     
@@ -299,6 +299,7 @@ module GCal4Ruby
     
     #Loads the event info from an XML string.
     def load(string)
+			return true if string.empty? 
       super(string)
       @xml = string
       @exists = true
@@ -307,7 +308,7 @@ module GCal4Ruby
       xml.root.elements.each(){}.map do |ele|
         case ele.name
           when 'id'
-            @calendar_id, @id = @feed_uri.gsub("http://www.google.com/calendar/feeds/", "").split("/events/")
+            @calendar_id, @id = @feed_uri.gsub("http://www.google.com/calendar/feeds/", "").split("/private/full/")
             @id = "#{@calendar_id}/private/full/#{@id}"
           when 'edited'
             @edited = Time.parse(ele.text)
@@ -372,7 +373,7 @@ module GCal4Ruby
         puts "id = "+id if service.debug
         d = service.send_request(GData4Ruby::Request.new(:get, "http://www.google.com/calendar/feeds/"+id, {"If-Not-Match" => "*"}))
         puts d.inspect if service.debug
-        if d
+        if d 
           return get_instance(service, d)
         end
       else

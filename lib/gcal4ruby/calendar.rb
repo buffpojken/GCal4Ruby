@@ -173,7 +173,7 @@ module GCal4Ruby
       if query.is_a? Hash and query[:id]
         id = query[:id]
         #log("Finding by ID: #{id}")
-        d = service.send_request(GData4Ruby::Request.new(:get, @@calendar_feed + id, {}))
+        d = service.send_request(GData4Ruby::Request.new(:get, id, {}))
         #log(d.inspect)
         if d
           return get_instance(service, d)
@@ -232,6 +232,7 @@ module GCal4Ruby
     
     #Loads the Calendar with returned data from Google Calendar feed.  Returns true if successful.
     def load(string)
+			return true if string.empty? 
       super(string)
       @exists = true
       @xml = string
@@ -239,7 +240,7 @@ module GCal4Ruby
       xml.root.elements.each(){}.map do |ele|
         case ele.name
           when "id"
-          @id = ele.text.gsub(@@calendar_feed, "")
+          @id = ele.text.gsub("www.google.com/calendar/feeds/default/calendars/", "")
           when 'summary'
           @summary = ele.text
           when "color"
